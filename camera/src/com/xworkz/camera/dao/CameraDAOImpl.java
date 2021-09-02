@@ -1,5 +1,7 @@
 package com.xworkz.camera.dao;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -51,6 +53,34 @@ public class CameraDAOImpl implements CameraDAO {
 			System.out.println("Deleted by Id: ");
 			trans.commit();
 
+		}
+	}
+
+	@Override
+	public void saveList(List<CameraEntity> entity) {
+		try (Session sess = factory.openSession()) {
+			Transaction trans = sess.beginTransaction();
+			entity.forEach(camEntity -> {
+				sess.save(camEntity);
+				System.out.println(entity);
+			});
+			trans.commit();
+		}
+
+	}
+
+	@Override
+	public void deleteList(List<Integer> ids) {
+		try (Session sess = factory.openSession()) {
+			Transaction trans = sess.beginTransaction();
+			ids.forEach(entity -> {
+				CameraEntity camEntity = sess.get(CameraEntity.class, entity);
+				if (ids.contains(entity)) {
+					sess.delete(camEntity);
+					System.out.println(camEntity);
+				}
+			});
+			trans.commit();
 		}
 	}
 
